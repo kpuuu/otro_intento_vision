@@ -396,72 +396,73 @@ Para éste proyecto, partimos basándonos en el paper de Hake~\cite{ourpaper}, e
 
 Para resolver este problema, combinamos el acercamiento de Hake con el de Schindler~\cite{elotro}. Usamos fotometría no calibrada para hacer el calculo de las normales a partir de 4 fotos tomadas con la Kinect y con una fuente externa de luz infrarroja. Luego, para el armar el mapa de profundidad, utilizamos el método de Gauss-Seidel con relajación.
 
-Finalmente, las pruebas son generadas haciendo una modificación del código de Kai Wolf~\cite{repo}, para adaptarlo a nuestras condiciones de trabajo, es decir, utilizar la Kinect como cámara y la fuente externa de lux infrarroja.
+Finalmente, las pruebas son generadas haciendo una modificación del código de Kai Wolf~\cite{repo}, para adaptarlo a nuestras condiciones de trabajo, es decir, utilizar la Kinect como cámara y la fuente externa de luz infrarroja.
  
 \section{Diseño e implementación }
-Para lograr el objetivo de realizar reconstrucciones $3D$, utilizamos el código de Kai Wolf, para las fotometría no calibrada~\cite{repo}, al cual le realizamos una serie de modificaciones y realizamos el código que permitiera utilizar la Kinect como cámara de fotografías. Para poder realizar las reconstrucciones en $3D$ utilizamos una luz infrarroja, como esta no entrego resultados favorables. Posterior a esto comenzamos a utilizar una luz halógena con filtro dicroico, este tipo de luces da paso a rayos infrarrojo visibles.
+Para lograr el objetivo de realizar reconstrucciones $3D$, utilizamos el código de Kai Wolf, que nos brindaba la fotometría no calibrada~\cite{repo}. A éste trabajo le realizamos una serie de modificaciones y agregamos el código que nos permite utilizar la Kinect como cámara capturadora. Para poder realizar las reconstrucciones en $3D$ utilizamos una luz infrarroja, que no entregó resultados favorables. Cambiamos entonces a una halógena con filtro dicroico, filtro que aporta un componente infrarrojo suficiente para captarlo conla Kinect, pero no tan fuerte como la luz infrarroja.
 \subsection{Código que permite la utilización de la Kinect}
 \begin{itemize}
-\item Diseño: Al momento de analizar como se utilizaría de la Kinect, se nos presentaron diferentes librerías (\texttt{OpenNi, Freenect}) que nos permitirían esto. Al momento de realizar pruebas con las librerías antes mencionadas ninguna resulto de la forma desea. Lo que nos obligo a utilizar \texttt{Openframenworks}.
-\item Implementación: para poder utilizar la Kinect como sensor de profundidad y de intensidades de la obtener las imágenes. Utilizamos las librerías de \texttt{Openframenworks}, mas específicamente \texttt{ofxKinect}. Este código nos permite obtener y almacenar las imágenes de intensidad y mapas de profundidad de las pruebas. Esto se realiza al presionar la tecla ``S", podemos almacenar las intensidades del frame de ese instante que esta siendo visto por la Kinect. Al presionar ``D" almacenamos los mapas de profundidad. El funcionamiento de esta libreria consiste en que es necesario determinar las variables esenciales a utilizar en el archivo \texttt{ofApp.h}, el cual crea una clase. En el archivo \texttt{ofApp.cpp} se encuentra las siguientes funciones: setup, update y draw, que siempre se ejecutan el mismo orden mencionado, luego realizando ciclos entre update y draw. 
-La función \texttt{setup} configura las opciones necesarias para iniciar la Kinect, \texttt{update} como su nombre lo indica renueva la información entregada por la Kinect y finalmente \texttt{draw} este dibuja la información necesaria en la pantalla. Además incluye la función \texttt{pressKey} el cual permite realizar acciones al presionar diferentes teclas.
+\item Diseño: Al momento de analizar el uso de la Kinect, se nos presentaron diferentes librerías (\texttt{OpenNi, Freenect, etc}) que nos brindaban herramientas para el desarrollo. Al momento de realizar pruebas con las librerías mencionadas, ninguna resultó de la forma deseada. Lo que nos obligó a recurrir a otros medios, llegando finalmente a utilizar \texttt{Openframenworks}.
+
+\item Implementación: para poder utilizar la Kinect como sensor de profundidad y de intensidades. Usamos las herramientas de \texttt{Openframenworks}, específicamente \texttt{ofxKinect}. Este código nos permite obtener y almacenar las imágenes de intensidad y mapas de profundidad de las pruebas. Esto se realiza al presionar la tecla ``S'', con la que podemos almacenar las intensidades del frame que en ese instante esta siendo visto por la Kinect. Al presionar ``D'', almacenamos los mapas de profundidad. El funcionamiento de esta libreria consiste en que es necesario determinar las variables esenciales a utilizar en el archivo \texttt{ofApp.h}, el cual crea una clase. En el archivo \texttt{ofApp.cpp} se encuentra las siguientes funciones: setup, update y draw, que siempre se ejecutan el orden mencionado, luego se continua realizando ciclos entre update y draw. 
+La función \texttt{setup} configura las opciones necesarias para iniciar la Kinect, \texttt{update} como su nombre lo indica, renueva la información entregada por la Kinect y finalmente \texttt{draw}, dibuja la información necesaria en la pantalla. Además incluye la función \texttt{pressKey}, que permite realizar acciones al presionar diferentes teclas.
 \end{itemize}
 
 
 \subsection{Código de la fotometría no calibrada}
 \subsubsection{Función \texttt{exportMesh}}
 \begin{itemize}
-\item Diseño: esta funcion nos permite transformar la informacion de las matrices de profunididad y de normales, en una representacion $3d$. Para poder visualizar las reconstrucciones realizadas utilizamos la herramienta \texttt{meshlab}.
-\begin{lstlisting}[float,language=C++,caption={Prototipo función \texttt{exportMesh}.},label=cod:c1]
+\item Diseño: esta función nos permite transformar la información de las matrices de profundidad y de normales, en una representación $3d$. Para poder visualizar las reconstrucciones realizadas utilizamos la herramienta \texttt{meshlab}.
+\begin{lstlisting}[float,language=C++,caption={Prototipo función \texttt{exportMesh}.},label=cod:c0]
 void exportMesh(cv::Mat Depth, cv::Mat Normals, cv::Mat texture);
 \end{lstlisting}
 \item Implementación: es función las variables \texttt{ofstream}, en donde esta crea un archivo con extensión \texttt{.obj} en donde los datos son ingresados escribiendo en el mismo archivo los valores necesarios de estas matrices.
 \end{itemize}
 \subsubsection{Función \texttt{imageMask}}
 \begin{itemize}
-\item Diseño: esta función consiste en la eliminar todo el fondo de la imagen transformándolo a color negro, y  donde se encuentra el objeto de prueba esta la silueta del objeto, rellenándolo con color blanco.
+\item Diseño: esta función consiste en eliminar todo el fondo de la imagen, transformándolo a color negro. Donde se encuentra el objeto de prueba, se deja la silueta del objeto, rellenándolo con color blanco.
 \begin{lstlisting}[float,language=C++,caption={Prototipo función \texttt{imageMask}.},label=cod:c1]
 Mat imageMask(vector<Mat> camImages, int numPics, Mat ambient);
 \end{lstlisting}
-\item Implementación: en el código~\ref{cod:c1} se puede observar el prototipo de esta función. El parámetro \texttt{camUmagenes}, es un vector que posee las imágenes de las distintas iluminaciones, \texttt{numPics} son las cantidad de imágenes que posee este arreglo y finalmente el \texttt{ambiente} es una imagen mas oscura para obtener el fondo. Para obtener la mascara se sumaron todos las imágenes y a este se le resto el ambiente. Para no obtener valores fuera del rango de escala de grises se realiza un threshold.
+\item Implementación: en el código~\ref{cod:c1} se puede observar el prototipo de esta función. El parámetro \texttt{camUmagenes}, es un vector que posee las imágenes de las distintas iluminaciones, \texttt{numPics} son las cantidad de imágenes que posee este arreglo y finalmente el \texttt{ambiente} es una imagen más oscura para obtener el fondo. Para obtener la mascara se sumaron todas las imágenes y se les restó el ambiente. Para no obtener valores fuera del rango de escala de grises se realiza un threshold.
 
 
 \end{itemize}
 \subsubsection{Función \texttt{computeNormals}}
 \begin{itemize}
-\item Diseño: esta función consiste en calcular la normal para cada pixeles de las imágenes,y asignado  a la matriz resultante un valor que es representado con diferentes colores. Como no se podía controlar o calibrar las fuentes de iluminación fue necesario utilizar un método de fotometría estero no calibrada. 
+\item Diseño: esta función consiste en calcular la normal para cada pixel de las imágenes, y asignarle  a la matriz resultante un valor que es representado con diferentes colores. Como no se podía controlar o calibrar las fuentes de iluminación, fue necesario utilizar un método de fotometría estero no calibrada. 
 \begin{lstlisting}[float,language=C++,caption={Prototipo función \texttt{computeNormals}.},label=cod:c2]
 Mat computeNormals(vector<Mat> camImages,Mat Mask =Mat());
 \end{lstlisting}
-\item Implementación: como se puede observar en el código~\ref{cod:c2} que representa al prototipo de esta función. Al igual que en la función anterior se le entrega el arreglo de imágenes, mas la mascara calculada anteriormente. Inicialmente esta función crea una matriz que almacene la información de intensidad de las fotos y en las diferentes columnas de esta representan imágenes con diferentes iluminaciones. Posterior a crear esta matriz se le realiza una descomposición de valores singulares para obtener los valores propios y así poder obtener la información en una matriz de tres canales (RGB).
+\item Implementación: al igual que en la función anterior se le entrega el arreglo de imágenes, más la mascara calculada anteriormente. Inicialmente esta función crea una matriz que almacene la información de intensidad de las fotos y en las diferentes columnas de esta se representan imágenes con diferentes iluminaciones. Posterior a crear esta matriz se le realiza una descomposición de valores singulares para obtener los valores propios y así poder obtener la información en una matriz de tres canales (RGB).
 \end{itemize}
 \subsubsection{Función \texttt{cvtFloatToGrayscale}}
 \begin{itemize}
-\item Diseño: este funcion tal como su nombre lo dice transforma una matriz de valores flotantes a un matriz en escala de grises.
+\item Diseño: esta función, tal como su nombre lo dice, transforma una matriz de valores flotantes a un matriz en escala de grises.
 
 \begin{lstlisting}[float,language=C++,caption={Prototipo función \texttt{cvtFloatToGrayscale}.},label=cod:c3]
 Mat cvtFloatToGrayscale(cv::Mat F, int limit = 255);
 \end{lstlisting}
 
-\item Implementación: el código~\ref{cod:c3} es ingresar una matriz para que esta sea transformada a una escala de grises, principalmente a valores que no sobrepasen el valor de 255.
+\item Implementación: en el código~\ref{cod:c3} se ingresa una matriz para que sea transformada a una escala de grises, principalmente a valores que no sobrepasen el 255.
 
 \end{itemize}
 \subsubsection{Función \texttt{localHeightfield}}
 \begin{itemize}
-\item Diseño: esta función nos permite a través del calculo de de normales, realizar una estimación de las profundidades de la imagen. Se utiliza el método de Gauss-Seidel con relajación, esta manera de calcular la profundidad es mediante un método iterativo actualizando el valor de cada pixel en relación a su vecindario. De esta forma se utilizan los valores de las normales y el mapa de profundidad comienza siendo plano a aumentar las diferentes profundidades mediante las iteraciones.
+\item Diseño: esta función nos permite, a través del calculo de de normales, realizar una estimación de las profundidades de la imagen. Se utiliza el método de Gauss-Seidel con relajación, de esta manera se calcula la profundidad mediante un método iterativo, actualizando el valor de cada pixel en relación a su vecindario. De esta forma se utilizan los valores de las normales y el mapa de profundidad, que comienza siendo plano, va aumentando la profundidad a medida que avanzan las iteraciones.
 \begin{lstlisting}[float,language=C++,caption={Prototipo función \texttt{localHeigthfield}.},label=cod:c4]
 Mat localHeightfield(cv::Mat Normals);
 \end{lstlisting}
-\item Implementación: para estimar las profundidades se realizaron iteración con pirámides de la matriz de las normales, en estas iteraciones se calculan la profundidad de un píxel mediante el análisis del vecindario de este. Después de la estimación de esta matriz de profundidad buscamos los valores máximos y mínimos para que nuestra profundidad no supere estos valores.
+\item Implementación: para estimar las profundidades se realizaron iteraciones sobre una serie de pirámides de la matriz de las normales. En éstas iteraciones se calcula la profundidad de un píxel mediante el análisis de su vecindario. Después de la estimación de esta matriz de profundidad, buscamos los valores máximos y mínimos para que nuestra profundidad no supere estos valores.
 \end{itemize}
 \subsubsection{Función \texttt{E\_d}}
 \begin{itemize}
-\item Diseño: como menciona Haque~\cite{ourpaper} en su paper es necesario realizar diferentes funciones de costos, una de estas es calcular el costo para las normales. Este se rige por
+\item Diseño: como menciona Hake~\cite{ourpaper} en su paper, es necesario realizar diferentes funciones de costos, una de estas es calcular el costo para las normales. Este se rige por
 \begin{equation} \label{eq:1}
 E_d(\hat{Z})= \sum_{p} w_p ||u_p||^{2}(Z_{p}-\hat{Z_p})^{2}
-\end{equation}
-en donde $u_p=[ {\frac{-x}{f}}  {\frac{-y}{f}}  1]^{T}$, $w_p$ representa los valores propios de $\sum_q N_{q}N_{q}^{T}$ y donde $Z$ representa las profundidades para los distintos valores de los pixeles.
-\item Implementación: para este se implemento la ecuación~\ref{eq:1}, para cada valor de las distintas profundidades, ya que se ingresan las profundidades estimadas y las profundidades calculadas con la Kinect.
+\end{equation}%
+donde $u_p=[ {\frac{-x}{f}}  {\frac{-y}{f}}  1]^{T}$, $w_p$ representa los valores propios de $\sum_q N_{q}N_{q}^{T}$ y donde $Z$ representa las profundidades para los distintos valores de los pixeles.
+\item Implementación: para este se implementó la ecuación~\ref{eq:1}, para cada valor de las distintas profundidades, ya que se ingresan las profundidades estimadas y las profundidades calculadas con la Kinect.
 \end{itemize}
 \subsubsection{Función \texttt{E\_n}}
 \begin{itemize}
@@ -482,7 +483,90 @@ en esta función se utilizan todas las funciones mencionadas anteriormente, el o
 
 
 \section{Experimentos}
+Como mencionamos anteriormente, nos basamos en el código de Kai Wolf~\cite{repo} para obtener las normales y el mapa de profundidad, pero le aplicamos algunos cambios que se reflejaron en reconstrucciones de mejor calidad. 
+
+Siguiendo la idea de Hake, decidimos aplicarle un filtro Gaussiano a las imágenes obtenidas con la Kinect, para eliminar ruido y lograr mayor suavidad en las reconstrucciones. Una vez obtenidas las fotos, hicimos el procesamiento de la máscara (Ver figura~\ref{mascaras}), y le aplicamos un \texttt{bitwise\_and} a las imágenes con ésta. Éste proceso Wolf no lo hacía, solo aplicaba la máscara a las normales. Hacer este cambio nos permitió eliminar mejor el fondo y trabajar solo con los datos que nos interesaban. En la figura~\ref{comparacion}, se puede ver una comparación de ambos métodos. Usando las imágenes de ejemplo proporcionadas por Kai Wolf, hicimos la reconstrucción usando ambos algoritmos. 
+
+\begin{figure}[t]
+\begin{center}
+	\includegraphics[width= 4cm]{Mascaracrepu}
+	\includegraphics[width= 4cm]{Mascaramona}
+	\includegraphics[width= 4cm]{Mascaraniple}
+		\caption{Mascaras auto-generadas para eliminar el fondo.}
+		\label{mascaras}
+\end{center}
+\end{figure}
+
+\begin{figure*}[bt]%prefer bottom (b) and then top (t)
+\centering
+\subfloat[Reconstrucción de Wolf.]{%<- this stops spurious white spaces
+  \includegraphics[width= 8cm]{3dwolfwolf00}
+  \label{asd}
+}%
+\subfloat[Reconstrucción nuestra.]{%
+  \includegraphics[width= 6cm]{3dwolfnuestro01}
+  \label{qwe}
+}
+\caption{Comparación del algoritmo de Wolf y el nuestro para la reconstrucción.}
+\label{comparacion}
+\end{figure*}
+
+Luego de obtener las imágenes y pre procesarlas, encontramos las normales y el mapa de profundidad. Para calcular las normales, se necesita la suma de las 4 fotos, menos la mascara. A partir de esta imagen se construyen las normales. El mapa de profundidad, se obtiene con la información de la máscara y de la textura de la imagen, para la cual se usa una de las 4 previamente capturadas. La figura~\ref{normal} y la figura~\ref{profundidad}, muestran las normales y el mapa de profundidad respectivamente.
+
+\begin{figure}[t]
+\begin{center}
+	\includegraphics[width= 4cm]{Normalcrepu}
+	\includegraphics[width= 4cm]{Normalmona}
+	\includegraphics[width= 4cm]{Normalniple}
+		\caption{Imágenes que representan las normales.}
+		\label{normal}
+\end{center}
+\end{figure}
+
+\begin{figure}[t]
+\begin{center}
+	\includegraphics[width= 4cm]{Profundidadcrepu}
+	\includegraphics[width= 4cm]{Profundidadmona}
+	\includegraphics[width= 4cm]{Profundidadniple}
+		\caption{Ejemplos de mapas de profundidad.}
+		\label{profundidad}
+\end{center}
+\end{figure}
+
+Durante el desarrollo del proyecto, tuvimos varios problemas para armar el set-up de Kai Wolf. Esto debido a la dificultad para controlar el ambiente. Uno de los problemas que tuvimos fue la luz infrarroja. La primera que teníamos era muy grande y de luminosidad muy fuerte. Esto producía que el objeto se viera en extremo iluminado y que por ende su mapa de profundidad no sea adecuado. La figura~\ref{crepu}, muestra un resultado fallido.
+
+\begin{figure}[t]
+\begin{center}
+	\includegraphics[width= 5cm]{3dcrepu00}
+		\caption{Reconstrucción 3D fallida.}
+		\label{crepu}
+\end{center}
+\end{figure}
+
+A pesar de todo esto, logramos obtener reconstrucciones que definimos como exitosas. Pudimos conseguir una ampolleta más pequeña con componente infrarrojo suficiente para poder captarla con la Kinect. Además, encontramos objetos de prueba que cumplían con las características requeridas por la fotomometría estereo, es decir, eran lambertianos. La figura~\ref{mona} y~\ref{niple}, muestran estos resultados.
+
+\begin{figure}[t]
+\begin{center}
+	\includegraphics[width= 5cm]{3dmona01}
+		\caption{Reconstrucción 3D de una figura de buda.}
+		\label{mona}
+\end{center}
+\end{figure}
+
+\begin{figure}[t]
+\begin{center}
+	\includegraphics[width= 5cm]{3dniple02}
+		\caption{Reconstrucción 3D de una figura abstracta ecuatoriana.}
+		\label{niple}
+\end{center}
+\end{figure}
+
 \section{Conclusión}
+La reconstrucción de objetos en 3D, se hace todo en base a las probabilidades. Hemos notado que la gran mayoría de los métodos utilizados, lo que hacen es optimizar funciones que aproximan la representación del objeto en base a sus imágenes. Identificamos también que el procesamiento de previo que se le aplica a la imagen es de suma importancia, dado que nos permitirá obtener luego una mejor representación.
+
+Luego de realizar una exhaustiva búsqueda de información y analizar los resultados de las reconstrucciones, hemos descubierto que es más complejo poder identificar los detalle de un objeto. También hemos podido observar que este campo ha ido en aumento ya sea por reconstrucciones en objetos en movimiento, de personas, de objetos con superficies no Lambertianas, mejoras de obtención de detalles, entre otros. Es necesario comprender cuales son las variables claves para la obtención de una reconstrucción de alta calidad, ya que la mayor complejidad se encuentra en calcular la estimación de la superficie o profundidad de un objeto.
+
+Se puede apreciar el enfoque de Haque~\cite{ourpaper}, es mejorar la estimación de las profundidades utilizando un mapa de estas entregado por la Kinect y la ecuación de costos para calcularlo. Durante la investigación descubrimos que hay métodos mas robustos que la utilización de la relajación de Gauss-Seidel para las profundidad, algunos de estos son la utilización de Poisson, Multiple Process Unit (MPU), radial basis function (RBF), entre otros. Sin considerar que depende del enfoque que se le desee dar a la reconstrucción, es el método que se seleccionará para obtener la representación $3D$.
 
 % references section
 
