@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>7EA47B00-A1BC-49BC-832C-263CC6802A3B</string>
+	<key>IDESourceControlProjectName</key>
+	<string>sacaFotos</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>5F590FBE3A6FCA787BC9D3C2B327E07E4B26FF48</key>
+		<string>giteit.udp.cl:vision-2015/prototipo-proyecyo-final.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>codigo/sacaFotos/sacaFotos.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>5F590FBE3A6FCA787BC9D3C2B327E07E4B26FF48</key>
+		<string>../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>giteit.udp.cl:vision-2015/prototipo-proyecyo-final.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>5F590FBE3A6FCA787BC9D3C2B327E07E4B26FF48</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>5F590FBE3A6FCA787BC9D3C2B327E07E4B26FF48</string>
+			<key>IDESourceControlWCCName</key>
+			<string>prototipo-proyecyo-final</string>
+		</dict>
+	</array>
+</dict>
+</plist>
